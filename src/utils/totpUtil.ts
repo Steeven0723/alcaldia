@@ -52,26 +52,6 @@ export async function generateTOTP(secret: string, window = 0): Promise<string> 
     return (code % 10 ** 6).toString().padStart(6, "0");
 }
 
-
-
-// Función para verificar un código TOTP
-// export async function verifyTOTP(secret: string, token: string, window: number = 1): Promise<boolean> {
-//     for (let errorWindow = -window; errorWindow <= window; errorWindow++) {
-//         const generatedToken = await generateTOTP(secret, errorWindow);
-//         if (generatedToken === token) return true;
-//     }
-//     return false;
-// }
-
-// export async function verifyTOTP(secret: string, token: string): Promise<boolean> {
-//     for (let window = -1; window <= 1; window++) {
-//         if (token === await generateTOTP(secret, window)) {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
 export async function verifyTOTP(secret: string, totpCode: string): Promise<boolean> {
     const generatedTOTP = await generateTOTP(secret);
     return generatedTOTP === totpCode; // Comparación exacta

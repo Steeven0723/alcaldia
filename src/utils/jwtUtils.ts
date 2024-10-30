@@ -10,7 +10,8 @@ export async function createJWT(payload: object): Promise<string> {
 
 export async function verifyJWT(token: string): Promise<object | null> {
   try {
-    return await verify(token, _JWT_SECRET, "HS512");
+    const secretKey = await importJwtSecret(_JWT_SECRET);
+    return await verify(token, secretKey, "HS512");
   } catch {
     return null;
   }

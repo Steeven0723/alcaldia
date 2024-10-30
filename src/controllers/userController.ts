@@ -94,14 +94,6 @@ export const loginUser = async (ctx: Context) => {
             return;
         }
 
-        // Verifica el código TOTP
-        // const isTOTPValid = await verifyTOTP(user.totp_secret, totpCode);
-        // if (!isTOTPValid) {
-        //     ctx.response.status = 401;
-        //     ctx.response.body = { message: "Código TOTP inválido" };
-        //     return;
-        // }
-
         if (!(await verifyTOTP(user.totp_secret, totpCode))) {
             ctx.response.status = 401;
             ctx.response.body = { message: "Código TOTP inválido" };

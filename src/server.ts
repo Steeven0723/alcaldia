@@ -4,20 +4,12 @@ import Routes from "./routes/routes.ts";
 import { errorHandler } from "./middlewares/errorHandler.ts";
 import { connectToMongoDB } from "./config/db.ts";
 import { cors } from "./middlewares/cors.ts"; // Importar el middleware CORS
-import { oakCors } from "https://deno.land/x/cors@v1.2.2/mod.ts";
-
 
 const app = new Application();
 
 // Usar el middleware
 app.use(cors);
 app.use(errorHandler);
-
-
-app.use(oakCors({
-  origin: "*", // Ajusta según los requisitos de tu entorno
-  methods: ["GET", "POST", "OPTIONS"],
-}));
 
   // Conectar a MongoDB y manejar posibles errores
 try {

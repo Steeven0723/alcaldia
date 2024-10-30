@@ -1,6 +1,7 @@
 // routes/routes.ts
 import { Router, verify } from "../../deps.ts";
 import userRouter from "./userRoutes.ts"; // Importa las rutas de usuario
+import { authMiddleware } from "../middlewares/authMiddleware.ts"; // Middleware de autenticación
 
 const router = new Router();
 
@@ -51,7 +52,7 @@ router.get("/login.html", async (ctx) => {
 
 
 // Rutas para el dashboard
-router.get("/dashboard.html", async (ctx) => {
+router.get("/dashboard.html", authMiddleware, async (ctx) => {
   try {
     await ctx.send({
       root: `${Deno.cwd()}/public`,
@@ -63,6 +64,7 @@ router.get("/dashboard.html", async (ctx) => {
     ctx.response.body = { message: "Archivo no encontrado" };
   }
 });
+
 
 // Rutas para CSS y JS
 router.get("/css/:file", async (ctx) => {
@@ -92,7 +94,6 @@ router.get("/js/:file", async (ctx) => {
     ctx.response.body = { message: "Archivo JS no encontrado" };
   }
 });
-
 
 // Puedes agregar más rutas aquí
 
