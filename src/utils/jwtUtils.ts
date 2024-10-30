@@ -3,8 +3,6 @@ import { create,  verify } from "../../deps.ts";
 
 export const _JWT_SECRET = "8f2bbf88c5af2494e71d8990b394e2f8cd9f8c58fca4e7569c37376870a12a1cy";
 
-
-
 export async function createJWT(payload: object): Promise<string> {
   const secretKey = await importJwtSecret(_JWT_SECRET);
   return await create({ alg: "HS512", typ: "JWT" }, payload, secretKey);

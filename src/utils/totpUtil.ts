@@ -1,9 +1,10 @@
 // utils/totpUtil.ts
 import { encode } from "../../deps.ts";
 
+
 export function generateTOTPSecret(): string {
     const randomBytes = crypto.getRandomValues(new Uint8Array(10));
-    return encode(randomBytes).replace(/=/g, "");
+    return encode(randomBytes).replace(/[^A-Z2-7]/g, "");
 }
 
 // Función para convertir base32 a ArrayBuffer
@@ -48,15 +49,31 @@ export async function generateTOTP(secret: string, window = 0): Promise<string> 
         ((hmacResult[offset + 1] & 0xff) << 16) |
         ((hmacResult[offset + 2] & 0xff) << 8) |
         (hmacResult[offset + 3] & 0xff);
-    return (code % 1000000).toString().padStart(6, "0");
+    return (code % 10 ** 6).toString().padStart(6, "0");
 }
 
+
+
 // Función para verificar un código TOTP
-export async function verifyTOTP(secret: string, token: string): Promise<boolean> {
-    for (let window = -1; window <= 1; window++) {
-        if (token === await generateTOTP(secret, window)) {
-            return true;
-        }
-    }
-    return false;
+// export async function verifyTOTP(secret: string, token: string, window: number = 1): Promise<boolean> {
+//     for (let errorWindow = -window; errorWindow <= window; errorWindow++) {
+//         const generatedToken = await generateTOTP(secret, errorWindow);
+//         if (generatedToken === token) return true;
+//     }
+//     return false;
+// }
+
+// export async function verifyTOTP(secret: string, token: string): Promise<boolean> {
+//     for (let window = -1; window <= 1; window++) {
+//         if (token === await generateTOTP(secret, window)) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
+
+export async function verifyTOTP(secret: string, totpCode: string): Promise<boolean> {
+    const generatedTOTP = await generateTOTP(secret);
+    return generatedTOTP === totpCode; // Comparación exacta
 }
+

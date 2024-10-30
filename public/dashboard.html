@@ -1,88 +1,39 @@
-<!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #f0f0f0;
-      }
-      .container {
-        background-color: white;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      h1 {
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Bienvenido al Dashboard</h1>
-      <p>Has iniciado sesión correctamente.</p>
-      <a href="/" id="logout">Cerrar sesión</a>
-    </div>
 
-    <script>
-      // Aquí deberías tener una forma de obtener el token
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        console.log("Token no encontrado");
-        window.location.href = "/"; // Redirigir si no hay token
-      } else {
-        console.log("Token encontrado:", token);
-      }
-
-      async function loadDashboard() {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          alert("No autorizado, redirigiendo al inicio de sesión.");
-          window.location.href = "/login.html"; // Redirigir si no hay token
-          return;
+  <!DOCTYPE html>
+  <html lang="es">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Dashboard</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          background-color: #f0f0f0;
         }
-
-        try {
-          const response = await fetch("/dashboard.html", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`, // Pasar el token en el encabezado
-            },
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Error:", errorData.message);
-            alert("No autorizado, redirigiendo al inicio de sesión.");
-            window.location.href = "/login.html";
-            return;
-          }
-
-          const data = await response.text();
-          document.querySelector(".container").innerHTML = data;
-        } catch (error) {
-          console.error("Error al cargar el dashboard:", error);
-          alert("No autorizado, redirigiendo al inicio de sesión.");
-          window.location.href = "/login.html";
+        .container {
+          background-color: white;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-      }
+        h1 {
+          text-align: center;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Bienvenido al Dashboard</h1>
+        <p>Has iniciado sesión correctamente.</p>
+        <a href="/" id="logout">Cerrar sesión</a>
+      </div>
+  
+      <script src="./js/dashboard.js"></script> <!-- Archivo JS externo -->
 
-      document.getElementById("logout").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        window.location.href = "/";
-      });
-
-      loadDashboard();
-    </script>
-  </body>
-</html>
+    </body>
+  </html>

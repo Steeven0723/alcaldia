@@ -49,6 +49,21 @@ router.get("/login.html", async (ctx) => {
   }
 });
 
+
+// Rutas para el dashboard
+router.get("/dashboard.html", async (ctx) => {
+  try {
+    await ctx.send({
+      root: `${Deno.cwd()}/public`,
+      index: "dashboard.html",
+    });
+  } catch (error) {
+    console.error("Error al enviar el archivo:", error);
+    ctx.response.status = 404;
+    ctx.response.body = { message: "Archivo no encontrado" };
+  }
+});
+
 // Rutas para CSS y JS
 router.get("/css/:file", async (ctx) => {
   const file = ctx.params.file;
@@ -77,27 +92,6 @@ router.get("/js/:file", async (ctx) => {
     ctx.response.body = { message: "Archivo JS no encontrado" };
   }
 });
-
-// Rutas para el dashboard
-// router.get("/dashboard.html", async (ctx) => {
-//   const authHeader = ctx.request.headers.get("Authorization");
-//   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//     ctx.response.status = 401;
-//     ctx.response.body = { message: "No autorizado" };
-//     return;
-//   }
-
-//   const token = authHeader.split(" ")[1];
-//   try {
-//     const payload = await verify(token, _JWT_SECRET, "HS512");
-//     console.log("Token verificado con éxito", payload);
-//     ctx.response.body = await Deno.readTextFile("./public/dashboard.html");
-//   } catch (error) {
-//     console.error("Error al verificar el token:", error.message);
-//     ctx.response.status = 401;
-//     ctx.response.body = { message: "Token inválido" };
-//   }
-// });
 
 
 // Puedes agregar más rutas aquí

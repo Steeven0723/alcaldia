@@ -71,36 +71,61 @@ export const registerUser = async (ctx: Context) => {
 };
 
 export const loginUser = async (ctx: Context) => {
-    const db = await connectToMongoDB();
-    const usersCollection = db.collection<User>("users");
-  
-    const { email, password, totpCode } = await ctx.request.body().value;
-  
-    const user = await usersCollection.findOne({ email });
-    if (!user) {
-      ctx.response.status = 401;
-      ctx.response.body = { message: "Usuario no encontrado" };
-      return;
+    try {
+        const db = await connectToMongoDB();
+        const usersCollection = db.collection<User>("users");
+
+        // Extrae los datos de la solicitud
+        const { email, password, totpCode } = await ctx.request.body().value;
+
+        // Verifica si el usuario existe
+        const user = await usersCollection.findOne({ email });
+        if (!user) {
+            ctx.response.status = 401;
+            ctx.response.body = { message: "Usuario no encontrado" };
+            return;
+        }
+
+        // Verifica la contraseña
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            ctx.response.status = 401;
+            ctx.response.body = { message: "Contraseña incorrecta" };
+            return;
+        }
+
+        // Verifica el código TOTP
+        // const isTOTPValid = await verifyTOTP(user.totp_secret, totpCode);
+        // if (!isTOTPValid) {
+        //     ctx.response.status = 401;
+        //     ctx.response.body = { message: "Código TOTP inválido" };
+        //     return;
+        // }
+
+        if (!(await verifyTOTP(user.totp_secret, totpCode))) {
+            ctx.response.status = 401;
+            ctx.response.body = { message: "Código TOTP inválido" };
+            return;
+        }
+
+        // Genera el token JWT
+        const token = await createJWT({
+            id: user._id.toString(),
+            email: user.email,
+            exp: getNumericDate(60 * 60),
+        });
+
+        // Envía el token y el mensaje de éxito
+        ctx.response.status = 200;
+        ctx.response.body = { message: "Inicio de sesión exitoso", token };
+
+        // Opcional: Configura el encabezado de autorización (si usas uno)
+        ctx.response.headers.set("Authorization", `Bearer ${token}`);
+
+    } catch (error) {
+        console.error("Error en loginUser:", error);
+        ctx.response.status = 500;
+        ctx.response.body = { message: "Error interno del servidor" };
     }
-  
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      ctx.response.status = 401;
-      ctx.response.body = { message: "Contraseña incorrecta" };
-      return;
-    }
-  
-    if (!(await verifyTOTP(user.totp_secret, totpCode))) {
-      ctx.response.status = 401;
-      ctx.response.body = { message: "Código TOTP inválido" };
-      return;
-    }
-  
-    const token = await createJWT({
-      id: user._id.toString(),
-      email: user.email,
-      exp: getNumericDate(60 * 60),
-    });
-  
-    ctx.response.body = { message: "Inicio de sesión exitoso", token };
-  };
+};
+
