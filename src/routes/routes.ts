@@ -1,12 +1,12 @@
 // routes/routes.ts
-import { Router, verify } from "../../deps.ts";
+import { Router } from "../../deps.ts";
 import userRouter from "./userRoutes.ts"; // Importa las rutas de usuario
-import { authMiddleware } from "../middlewares/authMiddleware.ts"; // Middleware de autenticación
 
 const router = new Router();
 
 router.use(userRouter.routes());
 router.use(userRouter.allowedMethods());
+
 
 // Ruta para la página de inicio
 router.get("/", async (ctx) => {
@@ -23,7 +23,7 @@ router.get("/", async (ctx) => {
 });
 
 // Ruta para el registro (register.html)
-router.get("/register.html", async (ctx) => {
+router.get("/auth/register.html", async (ctx) => {
   try {
     await ctx.send({
       root: `${Deno.cwd()}/public`,
@@ -37,7 +37,7 @@ router.get("/register.html", async (ctx) => {
 });
 
 // Ruta para el login (login.html)
-router.get("/login.html", async (ctx) => {
+router.get("/auth/login.html", async (ctx) => {
   try {
     await ctx.send({
       root: `${Deno.cwd()}/public`,
@@ -49,22 +49,6 @@ router.get("/login.html", async (ctx) => {
     ctx.response.body = { message: "Archivo no encontrado" };
   }
 });
-
-
-// Rutas para el dashboard
-router.get("/dashboard.html", authMiddleware, async (ctx) => {
-  try {
-    await ctx.send({
-      root: `${Deno.cwd()}/public`,
-      index: "dashboard.html",
-    });
-  } catch (error) {
-    console.error("Error al enviar el archivo:", error);
-    ctx.response.status = 404;
-    ctx.response.body = { message: "Archivo no encontrado" };
-  }
-});
-
 
 // Rutas para CSS y JS
 router.get("/css/:file", async (ctx) => {

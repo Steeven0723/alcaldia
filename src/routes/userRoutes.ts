@@ -1,17 +1,16 @@
 // routes/userRoutes.ts
 import { Router } from "../../deps.ts";
 import { registerUser, loginUser,  } from "../controllers/userController.ts";
-import { authMiddleware } from "../middlewares/authMiddleware.ts"; // Middleware de autenticación
-
+import dashboardRoutes from "./dashboardRoutes.ts";
 
 const router = new Router();
+
+// Rutas de autenticación de usuario
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
-// Ruta protegida del dashboard
-router.get("/dashboard.html", authMiddleware, (ctx) => {
-    ctx.response.status = 200;
-    ctx.response.body = "Bienvenido al Dashboard"; // O el contenido JSON del dashboard
-});
+// Rutas del dashboard
+router.use(dashboardRoutes.routes());
+router.use(dashboardRoutes.allowedMethods());
 
 export default router;
