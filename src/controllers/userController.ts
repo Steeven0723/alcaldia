@@ -1,6 +1,6 @@
 // //controllers/userController.ts
 import { bcrypt, Context, getNumericDate } from "../../deps.ts";
-import { User } from "../models/userModel.ts";
+import { User , UserRole} from "../models/userModel.ts";
 import { connectToMongoDB } from "../config/db.ts";
 import { _JWT_SECRET } from "../utils/jwtUtils.ts";
 import { generateTOTPSecret } from "../utils/totpUtil.ts";
@@ -48,6 +48,7 @@ export const registerUser = async (ctx: Context) => {
         email: userData.email,
         password: hashedPassword,
         totp_secret: totpSecret,
+        role: userData.role,
     };
 
     try {
@@ -75,10 +76,8 @@ export const loginUser = async (ctx: Context) => {
         const db = await connectToMongoDB();
         const usersCollection = db.collection<User>("users");
 
-        // Extrae los datos de la solicitud
         const { email, password, totpCode } = await ctx.request.body().value;
 
-        // Verifica si el usuario existe
         const user = await usersCollection.findOne({ email });
         if (!user) {
             ctx.response.status = 401;
@@ -86,7 +85,6 @@ export const loginUser = async (ctx: Context) => {
             return;
         }
 
-        // Verifica la contraseña
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
             ctx.response.status = 401;
@@ -100,20 +98,22 @@ export const loginUser = async (ctx: Context) => {
             return;
         }
 
-        // Genera el token JWT
         const token = await createJWT({
             id: user._id.toString(),
             email: user.email,
+            role: user.role, // Asegúrate de que `user.role` esté definido
             exp: getNumericDate(60 * 60),
         });
 
-        // Envía el token y el mensaje de éxito
         ctx.response.status = 200;
-        ctx.response.body = { message: "Inicio de sesión exitoso", token };
+        ctx.response.body = { 
+            message: "Inicio de sesión exitoso", 
+            token,
+            role: user.role // Asegúrate de incluir el rol aquí
+        };
 
-        // Opcional: Configura el encabezado de autorización (si usas uno)
         ctx.response.headers.set("Authorization", `Bearer ${token}`);
-
+        
     } catch (error) {
         console.error("Error en loginUser:", error);
         ctx.response.status = 500;

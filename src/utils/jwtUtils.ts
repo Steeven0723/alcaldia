@@ -17,6 +17,7 @@ export async function verifyJWT(token: string): Promise<object | null> {
   }
 }
 
+
 // Importar clave JWT en formato CryptoKey
 export async function importJwtSecret(secret: string) {
   return await crypto.subtle.importKey(

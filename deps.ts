@@ -1,6 +1,6 @@
 // deps.ts
 export { Application, Router, Context } from "https://deno.land/x/oak@v12.1.0/mod.ts";
-export type { Next } from "https://deno.land/x/oak@v17.1.0/mod.ts";
+export type { Next, Middleware } from "https://deno.land/x/oak@v17.1.0/mod.ts";
 export * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 export { MongoClient, ObjectId } from "https://deno.land/x/mongo@v0.33.0/mod.ts"; // Para interactuar con MongoDB
 export { validate, required, isEmail, minLength, maxLength } from "https://deno.land/x/validasaur@v0.15.0/mod.ts";
