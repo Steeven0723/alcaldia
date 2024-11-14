@@ -1,6 +1,6 @@
 // //controllers/userController.ts
 import { bcrypt, Context, getNumericDate } from "../../deps.ts";
-import { User , UserRole} from "../models/userModel.ts";
+import { User } from "../models/userModel.ts";
 import { connectToMongoDB } from "../config/db.ts";
 import { _JWT_SECRET } from "../utils/jwtUtils.ts";
 import { generateTOTPSecret } from "../utils/totpUtil.ts";

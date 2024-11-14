@@ -1,20 +1,71 @@
 <!DOCTYPE html>
-  <html lang="es">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Dashboard Funcionario</title>
-      <link rel="stylesheet" href="../css/dashboard.css">
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Funcionario</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Bienvenido al Dashboard Funcionario</h1>
+      <div class="content">
+        <div id="funcionario-content">
+          <!-- Formulario de Registro de PQRSD -->
+          <h2>Registrar PQRSD</h2>
+          <form id="pqrsd-form">
+            <label for="tipo">Tipo de PQRSD:</label>
+            <select id="tipo" name="tipo" required>
+              <option value="Petición">Petición</option>
+              <option value="Queja">Queja</option>
+              <option value="Reclamo">Reclamo</option>
+              <option value="Solicitud">Solicitud</option>
+              <option value="Otro">Otro</option>
+            </select>
 
-    </head>
-    <body>
-      <div class="container">
-        <h1>Bienvenido al Dashboard Funcionario</h1>
-        <div class="content"></div>
-        <a href="/" id="logout">Cerrar sesión</a>
+            <label for="dependenciaDestino">Dependencia Destino:</label>
+            <select id="dependenciaDestino" name="dependenciaDestino" required>
+              <option value="DesAlcalde">Despacho del Alcalde</option>
+              <option value="SecSalud">Secretaria de Salud</option>
+              <option value="SecGobierno">Secretaria de Gobierno</option>
+              <option value="SecPlaneación">Secretaria de Planeación</option>
+              <option value="SecrHacienda">Secretaria de Hacienda</option>
+              <option value="SecDesarrollo">Secretaria de Desarrollo Social y Económico</option>
+            </select>
+
+            <label for="prioridad">Prioridad:</label>
+            <select id="prioridad" name="prioridad" required>
+              <option value="Bajo">Bajo</option>
+              <option value="Medio">Medio</option>
+              <option value="Alto">Alto</option>
+            </select>
+
+            <label for="asunto">Asunto:</label>
+            <input type="text" id="asunto" name="asunto" required />
+
+            <label for="medio">Medio:</label>
+            <select id="medio" name="medio" required>
+              <option value="Correo">Correo</option>
+              <option value="Físico">Físico</option>
+            </select>
+
+            <label for="remitente">Remitente:</label>
+            <input type="text" id="remitente" name="remitente" required />
+
+            <label for="tramite">Trámite:</label>
+            <input type="text" id="tramite" name="tramite" required />
+
+            <label for="diasHabiles">Días Hábiles:</label>
+            <input type="number" id="diasHabiles" name="diasHabiles" min="2" required />
+
+            <button type="submit">Registrar PQRSD</button>
+          </form>
+        </div>
       </div>
-  
-      <script src="../js/dashboard.js"></script> <!-- Archivo JS externo -->
+      <a href="/" id="logout">Cerrar sesión</a>
+    </div>
 
-    </body>
-  </html>
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/pqrsd.js"></script> <!-- Archivo JS para el manejo de PQRSD -->
+  </body>
+</html>

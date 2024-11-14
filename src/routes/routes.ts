@@ -1,11 +1,14 @@
 // routes/routes.ts
 import { Router } from "../../deps.ts";
 import userRouter from "./userRoutes.ts"; // Importa las rutas de usuario
+import pqrRoutes from "./pqrRoutes.ts";
 
 const router = new Router();
 
 router.use(userRouter.routes());
 router.use(userRouter.allowedMethods());
+router.use(pqrRoutes.routes());
+
 
 
 // Ruta para la página de inicio
@@ -78,6 +81,8 @@ router.get("/js/:file", async (ctx) => {
     ctx.response.body = { message: "Archivo JS no encontrado" };
   }
 });
+
+
 
 // Puedes agregar más rutas aquí
 

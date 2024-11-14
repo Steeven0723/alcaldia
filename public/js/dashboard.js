@@ -20,13 +20,13 @@ if (!token) {
     })
     .then((data) => {
       const container = document.querySelector(".content");
-      container.innerHTML = `<h1>Bienvenido, ${role}</h1>`;
+      // container.innerHTML = `<h1>Bienvenido, ${role}</h1>`;
       
       if (role === "1") {
-        container.innerHTML += '<p>Contenido específico para administradores</p>';
+        // container.innerHTML += '<p>Contenido específico para administradores</p>';
         // Agregar aquí más contenido o funcionalidades para administradores
       } else if (role === "2") {
-        container.innerHTML += '<p>Contenido específico para funcionarios</p>';
+        // container.innerHTML += '<p>Contenido específico para funcionarios</p>';
         // Agregar aquí más contenido o funcionalidades para funcionarios
       } else if (role === "3") {
       container.innerHTML += '<p>Contenido específico para recepcionista</p>';

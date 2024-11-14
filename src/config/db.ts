@@ -15,7 +15,7 @@
 
 // config/db.ts
 import { MongoClient } from "../../deps.ts";
-// import "https://deno.land/x/dotenv@v3.2.2/load.ts"; // Carga las variables de entorno
+import "https://deno.land/x/dotenv@v3.2.2/load.ts"; // Carga las variables de entorno
 
 export const connectToMongoDB = async () => {
   const mongoURI = Deno.env.get("MONGO_URI") || "mongodb://127.0.0.1:27017/dbAlcaldia";
