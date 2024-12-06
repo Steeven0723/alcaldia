@@ -19,6 +19,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     if (response.ok) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.role);
+      localStorage.setItem("id_registro", data.id_registro); // Agregar este paso
       
       if (data.role === "1") {  // Administrador
         window.location.href = "/admin/dashboard.html";

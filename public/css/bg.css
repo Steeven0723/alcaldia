@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+/* Fondo translúcido con Tailwind y CSS */
+body {
+    font-family: 'Inter', sans-serif;
+    background-image: url('../img/bg_images.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.bg-overlay {
+    /* backdrop-filter: blur(6px); */
+    background-color: rgba(255, 255, 255, 0.94);
+}

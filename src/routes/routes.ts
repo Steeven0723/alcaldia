@@ -25,19 +25,48 @@ router.get("/", async (ctx) => {
   }
 });
 
-// Ruta para el registro (register.html)
+
+// // Ruta para el registro (register.html)
+// router.get("/auth/register.html", async (ctx) => {
+//   try {
+//     await ctx.send({
+//       root: `${Deno.cwd()}/public`,
+//       index: "register.html",
+//     });
+//   } catch (error) {
+//     console.error("Error al enviar el archivo:", error);
+//     ctx.response.status = 404;
+//     ctx.response.body = { message: "Archivo no encontrado" };
+//   }
+// });
+
+// Ruta para el registro del administrador
 router.get("/auth/register.html", async (ctx) => {
-  try {
-    await ctx.send({
-      root: `${Deno.cwd()}/public`,
-      index: "register.html",
-    });
-  } catch (error) {
-    console.error("Error al enviar el archivo:", error);
-    ctx.response.status = 404;
-    ctx.response.body = { message: "Archivo no encontrado" };
+  const query = ctx.request.url.searchParams;
+  const accessCode = query.get("code"); // Obtén el parámetro "code" de la URL
+
+  // Define tu código de acceso
+  const secretCode = "ADMIN2024";
+
+  if (accessCode === secretCode) {
+    try {
+      await ctx.send({
+        root: `${Deno.cwd()}/public`,
+        index: "register.html",
+      });
+    } catch (error) {
+      console.error("Error al enviar el archivo:", error);
+      ctx.response.status = 404;
+      ctx.response.body = { message: "Archivo no encontrado" };
+    }
+  } else {
+    // Redirige al login
+    ctx.response.status = 302; // Código de redirección
+    ctx.response.headers.set("Location", "/auth/login.html");
   }
 });
+
+
 
 // Ruta para el login (login.html)
 router.get("/auth/login.html", async (ctx) => {
@@ -82,6 +111,19 @@ router.get("/js/:file", async (ctx) => {
   }
 });
 
+router.get("/img/:file", async (ctx) => {
+  const file = ctx.params.file;
+  try {
+    await ctx.send({
+      root: `${Deno.cwd()}/public/`,
+      index: file,
+    });
+  } catch (error) {
+    console.error("Error al enviar el archivo IMG:", error);
+    ctx.response.status = 404;
+    ctx.response.body = { message: "Archivo IMG no encontrado" };
+  }
+});
 
 
 // Puedes agregar más rutas aquí

@@ -33,6 +33,16 @@ dashboardRouter.get("/dashboard", authMiddleware(["1", "2", "3"]), (ctx) => {
     };
   });
 
+  dashboardRouter.get("/official/listpqrs", authMiddleware(["2"]), (ctx) => {
+    ctx.response.headers.set("Content-Type", "application/json");
+    ctx.response.body = {
+      success: true,
+      message: "Bienvenido, funcionario",
+      role: ctx.state.user.role,
+    };
+  });
+
+
     // Ruta específica para recepcionista
   dashboardRouter.get("/reception/dashboard", authMiddleware(["3"]), (ctx) => {
     ctx.response.headers.set("Content-Type", "application/json");
@@ -76,6 +86,19 @@ dashboardRouter.get("/admin/dashboard.html", async (ctx) => {
       await ctx.send({
         root: `${Deno.cwd()}/public`,
         index: "/official/dashboard.html",
+      });
+    } catch (error) {
+      console.error("Error al enviar el archivo:", error);
+      ctx.response.status = 404;
+      ctx.response.body = { message: "Archivo no encontrado" };
+    }
+  });
+
+  dashboardRouter.get("/official/listpqrs.html", async (ctx) => {
+    try {
+      await ctx.send({
+        root: `${Deno.cwd()}/public`,
+        index: "/official/listpqrs.html",
       });
     } catch (error) {
       console.error("Error al enviar el archivo:", error);
