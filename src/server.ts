@@ -2,7 +2,7 @@
 import { Application, } from "../deps.ts";
 import Routes from "./routes/routes.ts";
 import { errorHandler } from "./middlewares/errorHandler.ts";
-import { connectToMongoDB } from "./config/db.ts";
+import { connectToPostgres } from "./config/db.ts";
 import { cors } from "./middlewares/cors.ts"; // Importar el middleware CORS
 
 const app = new Application();
@@ -14,7 +14,7 @@ app.use(errorHandler);
   // Conectar a MongoDB y manejar posibles errores
 try {
     // deno-lint-ignore no-unused-vars
-    const db = await connectToMongoDB();
+    const db = await connectToPostgres();
     // Si necesitas usar la base de datos, puedes pasarlo a las rutas
     // Routes.setDatabase(db); // Implementa esto en tu archivo de rutas si es necesario
   // deno-lint-ignore no-unused-vars

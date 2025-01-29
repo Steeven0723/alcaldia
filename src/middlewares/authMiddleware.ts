@@ -39,5 +39,5 @@ export function authMiddleware(allowedRoles: string[] = []) {
       ctx.response.status = 401;
       ctx.response.body = { message: "Token inválido o expirado. Inicia sesión nuevamente." };
     }
-  }
+  };
 }

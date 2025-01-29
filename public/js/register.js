@@ -8,7 +8,7 @@ document
     const userData = Object.fromEntries(formData.entries());
 
     try {
-      const response = await fetch("/register", {
+      const response = await fetch("/registerUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

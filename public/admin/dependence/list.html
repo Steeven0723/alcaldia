@@ -51,23 +51,19 @@
                     <button
                         class="block w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white flex items-center"
                         onclick="toggleAccordion(this, 'submenu-dependencia')">
-                        <i class="fas fa-project-diagram mr-2"></i><span>Dependencia</span>
+                        <i class="fas fa-building mr-2"></i><span>Dependencia</span>
                         <svg class="ml-auto transform transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
                           <path d="M4.293 5.293a1 1 0 0 1 1.414 0L8 7.586l2.293-2.293a1 1 0 0 1 1.414 1.414l-3 3a1 1 0 0 1-1.414 0l-3-3a1 1 0 0 1 0-1.414z"/>
                         </svg>
                     </button>
                     <div id="submenu-dependencia" class="hidden pl-6">
-                        <a href="/admin/dependence/create.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">Registrar </a>
+                        <a href="/admin/dependence/create.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">Registrar</a>
                         <a href="/admin/dependence/list.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">Lista</a>
                     </div>
                 </div>
                 <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
                     href="#">
                     <i class="fas fa-cog mr-2"></i><span>Consultar</span>
-                </a>
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="user/listUsers.html">
-                    <i class="fas fa-cog mr-2"></i><span>Posicionar</span>
                 </a>
             </nav>
             <button id="toggleSidebar"
@@ -83,9 +79,7 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between items-center py-4">
                         <div class="flex items-center">
-                            <button
-                                class="lg:hidden bottom-4 right-4 bg-gray-700 text-white p-2 rounded-full focus:outline-none"
-                                id="sidebarToggle">
+                            <button class="lg:hidden bottom-4 right-4 bg-gray-700 text-white p-2 rounded-full focus:outline-none" id="sidebarToggle">
                                 <i class="fas fa-bars"></i>
                             </button>
                             <h2 class="ml-2 text-xl font-semibold text-gray-800">
@@ -94,21 +88,15 @@
                         </div>
                         <div class="flex items-center">
                             <div class="relative">
-                                <button id="userMenuButton"
-                                    class="flex items-center text-gray-500 hover:text-gray-600 focus:outline-none">
-                                    <img class="h-8 w-8 rounded-full object-cover"
-                                        src="https://randomuser.me/api/portraits/men/1.jpg" alt="User avatar" />
+                                <button id="userMenuButton" class="flex items-center text-gray-500 hover:text-gray-600 focus:outline-none">
+                                    <img class="h-8 w-8 rounded-full object-cover" src="https://randomuser.me/api/portraits/men/1.jpg" alt="User avatar" />
                                     <span id="nombre" class="ml-2 text-sm font-medium">Nombre del usuario</span>
                                     <i class="fas fa-chevron-down ml-2"></i>
                                 </button>
-                                <div id="userMenuDropdown"
-                                    class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10 hidden">
-                                    <a href="#" id="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
-                                    <a href="#" id="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Configuración</a>
-                                    <a href="/" id="logout"
-                                        class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Cerrar sesión</a>
+                                <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10 hidden">
+                                    <a href="/" id="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+                                    <a href="/" id="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Configuración</a>
+                                    <a href="/" id="logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Cerrar sesión</a>
                                 </div>
                             </div>
                         </div>
@@ -116,28 +104,38 @@
                 </div>
             </header>
 
-
-            <main
-                class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 flex justify-center items-center relative h-screen">
-                <!-- Imagen de fondo -->
-                <div
-                    class="absolute inset-0 bg-[url('../img/bg_images.jpg')]  bg-[length:600px_600px] bg-center bg-no-repeat opacity-10">
+            <!-- Page Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+              <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                  <div class="flex justify-between items-center mb-4">
+                      <h1 class="text-2xl font-bold text-gray-800">Lista de Usuarios</h1>
+                  </div>
+                  <div class="overflow-x-auto">
+                  <table class="min-w-full bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">
+                      <thead class="bg-gray-100 border-b border-gray-200">
+                        <tr>
+                            <th class="px-1 py-1 text-left text-sm font-medium text-gray-600 border-r border-gray-200">Id</th>
+                            <th class="px-1 py-1 text-left text-sm font-medium text-gray-600 border-r border-gray-200">Dependencia</th>
+                            <th class="px-1 py-1 text-left text-sm font-medium text-gray-600">Accion</th>
+                          </tr>
+                      </thead>
+                      <tbody id="dependenceTableBody" class="divide-y divide-gray-200">
+                          <!-- Las filas de usuarios se insertarán aquí -->
+                      </tbody>
+                  </table>
                 </div>
+                  <div id="pagination" class="my-4 text-center"></div>
 
-                <!-- Capa de contenido -->
-                <div class="relative z-10 p-8 rounded-lg text-center">
-                    <h3 class="text-gray-700 text-3xl font-medium">Bienvenido al panel de administración.</h3>
-                </div>
-                
-            </main>
+              </div>
+          </main>
+          
         </div>
     </div>
 
-    <script src="../js/toggleAccordion.js"></script>
-    <script src="../js/navbar-toggle.js"></script>
-
-    <!-- Propio JavaScript -->
-    <script src="../js/dashboardAdmin.js"></script>
+    <script src="../../js/navbar-toggle.js"></script>
+    <script src="../../js/dashboardAdmin.js"></script>
+    <script src="../../js/listDependence.js"></script>
+    <script src="../../js/toggleAccordion.js"></script>
 
 </body>
 

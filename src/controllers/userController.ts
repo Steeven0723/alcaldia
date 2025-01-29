@@ -1,61 +1,79 @@
 // //controllers/userController.ts
-import { bcrypt, Context, getNumericDate, ObjectId } from "../../deps.ts";
-import { User } from "../models/userModel.ts";
-import { connectToMongoDB } from "../config/db.ts";
+import { bcrypt, Context } from "../../deps.ts";
+import { Usuarios } from "../models/userModel.ts";
+import { connectToPostgres } from "../config/db.ts";
 import { _JWT_SECRET } from "../utils/jwtUtils.ts";
 import { generateTOTPSecret } from "../utils/totpUtil.ts";
-import { createJWT } from "../utils/jwtUtils.ts";
-import { verifyTOTP } from "../utils/totpUtil.ts";
-
-import { RegistroLogin } from "../models/registroLoginModel.ts";
-import { Trazabilidad } from "../models/trazabilidadModel.ts";
 
 export const registerUser = async (ctx: Context) => {
-  const db = await connectToMongoDB();
-  const usersCollection = db.collection<User>("users");
+  const db = await connectToPostgres();
 
-  // Obtener los datos del cuerpo de la solicitud
-  const { value } = await ctx.request.body(); // 'value' contiene el cuerpo de la solicitud en formato JSON
-  const userData = await value;
+    // Obtener los datos del cuerpo de la solicitud
+    const { value } = await ctx.request.body(); // 'value' contiene el cuerpo de la solicitud en formato JSON
+    const userData = await value;
 
-  console.log(userData);
+    console.log(userData);
 
-  // Validar que las contraseñas coinciden
-  if (userData.password !== userData["confirm-password"]) {
-    ctx.response.status = 400;
-    ctx.response.body = { message: "Las contraseñas no coinciden." };
-    return;
-  }
+    // Validar que las contraseñas coinciden
+    if (userData.password !== userData["confirm-password"]) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: "Las contraseñas no coinciden." };
+      return;
+    }
 
-  // Verificar si el correo ya está en uso
-  const existingUser = await usersCollection.findOne({
-    email: userData.email,
-  });
-  if (existingUser) {
-    ctx.response.status = 400;
-    ctx.response.body = {
-      message: "El correo electrónico ya está en uso.",
-    };
-    return;
-  }
+    // Verificar si el correo ya está en uso
+    const existingUser = await db.queryObject<Usuarios>(
+      `SELECT * FROM usuarios WHERE email = $1`,
+      [userData.email]
+    );
 
-  // Cifrar la contraseña antes de guardarla
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(userData.password, salt);
-  const totpSecret = generateTOTPSecret();
+    if (existingUser.rows.length > 0) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        message: "El correo electrónico ya está en uso.",
+      };
+      return;
+    }
 
-  const newUser: User = {
-    name: userData.name,
-    email: userData.email,
-    password: hashedPassword,
-    totp_secret: totpSecret,
-    role: userData.role,
-  };
+    // Verificar si el correo ya está en uso
+    const existingCC = await db.queryObject<Usuarios>(
+      `SELECT * FROM usuarios WHERE cedula = $1`,
+      [userData.cedula]
+    );
 
-  try {
+    if (existingCC.rows.length > 0) {
+      ctx.response.status = 400;
+      ctx.response.body = {
+        message: "La cedula ya está en uso.",
+      };
+      return;
+    }
+
+    // Cifrar la contraseña antes de guardarla
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(userData.password, salt);
+    const totpSecret = generateTOTPSecret();
+
+    try {
     // Insertar el nuevo usuario en la base de datos
-    await usersCollection.insertOne(newUser);
-    console.log("Usuario registrado:", newUser);
+    const query = `
+      INSERT INTO usuarios (nombre, email, password, totp_secret, cedula, telefono, id_dependencia, role)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING *;
+    `;
+
+    const newUserResult = await db.queryObject<Usuarios>(query, [
+      userData.name,
+      userData.email,
+      hashedPassword,
+      totpSecret,
+      userData.cedula,
+      userData.telefono,
+      userData.id_dependencia,
+      userData.role,
+    ]);
+
+    const newUser = newUserResult.rows[0];
 
     ctx.response.status = 201; // Código de estado para "creado"
     ctx.response.body = {
@@ -68,206 +86,129 @@ export const registerUser = async (ctx: Context) => {
     console.error("Error al registrar el usuario:", error);
     ctx.response.status = 500;
     ctx.response.body = { message: "Error al registrar el usuario" };
+  } finally {
+    db.release();
   }
 };
 
-// export const loginUser = async (ctx: Context) => {
-//     try {
-//         const db = await connectToMongoDB();
-//         const usersCollection = db.collection<User>("users");
 
-//         const { email, password, totpCode } = await ctx.request.body().value;
+export const listUsers = async (ctx: Context) => {
+  const db = await connectToPostgres();
 
-//         const user = await usersCollection.findOne({ email });
-//         if (!user) {
-//             ctx.response.status = 401;
-//             ctx.response.body = { message: "Usuario no encontrado" };
-//             return;
-//         }
-
-//         const passwordMatch = await bcrypt.compare(password, user.password);
-//         if (!passwordMatch) {
-//             ctx.response.status = 401;
-//             ctx.response.body = { message: "Contraseña incorrecta" };
-//             return;
-//         }
-
-//         if (!(await verifyTOTP(user.totp_secret, totpCode))) {
-//             ctx.response.status = 401;
-//             ctx.response.body = { message: "Código TOTP inválido" };
-//             return;
-//         }
-
-//         const token = await createJWT({
-//             id: user._id.toString(),
-//             email: user.email,
-//             role: user.role, // Asegúrate de que `user.role` esté definido
-//             exp: getNumericDate(60 * 60),
-//         });
-
-//         ctx.response.status = 200;
-//         ctx.response.body = {
-//             message: "Inicio de sesión exitoso",
-//             token,
-//             role: user.role // Asegúrate de incluir el rol aquí
-//         };
-
-//         ctx.response.headers.set("Authorization", `Bearer ${token}`);
-
-//     } catch (error) {
-//         console.error("Error en loginUser:", error);
-//         ctx.response.status = 500;
-//         ctx.response.body = { message: "Error interno del servidor" };
-//     }
-// };
-
-export const loginUser = async (ctx: Context) => {
   try {
-    const db = await connectToMongoDB();
-    const usersCollection = db.collection<User>("users");
-    const registroLoginCollection = db.collection<RegistroLogin>("registro_login");
-    const trazabilidadCollection = db.collection<Trazabilidad>("trazabilidad");
+    // Consultar todos los usuarios en la base de datos
+    // const query = `
+    //   SELECT id_usuario, nombre, email, cedula, telefono, id_dependencia, role, estado, created_at
+    //   FROM usuarios
+    //   ORDER BY created_at ASC;
+    // `;
 
-    const { email, password, totpCode } = await ctx.request.body().value;
-    const user = await usersCollection.findOne({ email });
-    if (!user) {
-      ctx.response.status = 401;
-      ctx.response.body = { message: "Usuario no encontrado" };
-      return;
-    }
+    const query = `
+      SELECT 
+        u.id_usuario,
+        u.nombre,
+        u.email,
+        u.cedula,
+        u.telefono,
+        u.id_dependencia, 
+        u.role,
+        u.estado,
+        u.created_at
+      FROM usuarios u
+      ORDER BY u.id_usuario ASC;
+    `;
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      ctx.response.status = 401;
-      ctx.response.body = { message: "Contraseña incorrecta" };
-      return;
-    }
+    // const result = await db.queryObject<Usuarios>(
+    //   `SELECT * FROM usuarios ORDER BY id_usuario ASC` // Ordenar por ID ascendente
+    // );
 
-    if (!(await verifyTOTP(user.totp_secret, totpCode))) {
-      ctx.response.status = 401;
-      ctx.response.body = { message: "Código TOTP inválido" };
-      return;
-    }
+    const result = await db.queryObject<Usuarios>(query);
+    const users = result.rows;
 
-    const token = await createJWT({
-      id: user._id.toString(),
-      email: user.email,
-      role: user.role,
-      exp: getNumericDate(60 * 60),
-    });
-
-    // Registrar inicio de sesión
-    const fecha = new Date().toISOString().split("T")[0];
-    const hora = new Date().toLocaleTimeString("es-ES");
-    const newRegistro: RegistroLogin = {
-      id_user: user._id.toString(),
-      fecha,
-      hora,
-      text_trazabilidad: null,
-    };
-    const registro = await registroLoginCollection.insertOne(newRegistro);
-
-    // Registrar trazabilidad inicial
-    const newTrazabilidad: Trazabilidad = {
-      id_registro: registro.toString(),
-      text: "Inicio de sesión, /official/dashboard.html",
-      status: true,
-    };
-
-    await trazabilidadCollection.insertOne(newTrazabilidad);
-
-    ctx.response.status = 200;
+    ctx.response.status = 200; // Código de éxito
     ctx.response.body = {
-      message: "Inicio de sesión exitoso",
-      token,
-      role: user.role,
-      id_registro: registro.toString(),
+      success: true,
+      data: users,
     };
-
-    ctx.response.headers.set("Authorization", `Bearer ${token}`);
   } catch (error) {
-    console.error("Error en loginUser:", error);
-    ctx.response.status = 500;
-    ctx.response.body = { message: "Error interno del servidor" };
+    console.error("Error al listar usuarios:", error);
+    ctx.response.status = 500; // Error interno del servidor
+    ctx.response.body = {
+      success: false,
+      message: "Error al listar usuarios",
+    };
+  } finally {
+    db.release();
   }
 };
 
-export const logoutUser = async (ctx: Context) => {
-  const db = await connectToMongoDB();
-  const trazabilidadCollection = db.collection<Trazabilidad>("trazabilidad");
-  const registroLoginCollection = db.collection<RegistroLogin>("registro_login");
+export const getUser = async (ctx: Context) => {
+  const db = await connectToPostgres();
+  const userId = ctx.params.id; // Get the ID from the URL parameter
+  
 
   try {
-    const { id_registro } = await ctx.request.body().value;
-    console.log("ID de registro recibido:", id_registro);
+    const result = await db.queryObject<Usuarios>(
+      `SELECT * FROM usuarios WHERE id_usuario = $1`,
+      [userId]
+    );
 
-    if (!id_registro) {
-      throw new Error("ID de registro no proporcionado");
-    }
-
-    const trazabilidad = await trazabilidadCollection.findOne({
-      id_registro,
-      status: true,
-    });
-
-    console.log("Trazabilidad encontrada:", trazabilidad);
-
-    if (trazabilidad) {
-      // Guardar el texto de trazabilidad en registro_login
-      const updateResult = await registroLoginCollection.updateOne(
-        { _id: new ObjectId(id_registro) },
-        { $set: { text_trazabilidad: trazabilidad.text } }
-      );
-
-      console.log("Resultado de la actualización de registro_login:", updateResult);
-
-      if (updateResult.modifiedCount === 0) {
-        console.warn("No se actualizó ningún documento en registro_login");
-      }
-
-      // Actualizar trazabilidad
-      const trazabilidadUpdateResult = await trazabilidadCollection.updateOne(
-        { _id: trazabilidad._id },
-        { $set: { text: "null", status: false } }
-      );
-
-      console.log("Resultado de la actualización de trazabilidad:", trazabilidadUpdateResult);
-    } else {
-      console.warn("No se encontró un registro de trazabilidad activo");
-    }
-
-    ctx.response.status = 200;
-    ctx.response.body = { message: "Cierre de sesión exitoso" };
-  } catch (error) {
-    console.error("Error en logoutUser:", error);
-    ctx.response.status = 500;
-    ctx.response.body = { message: "Error interno del servidor", error: error.message };
-  }
-};
-export const updateTrazabilidad = async (ctx: Context) => {
-  const db = await connectToMongoDB();
-  const trazabilidadCollection = db.collection<Trazabilidad>("trazabilidad");
-
-  try {
-    const { id_registro, pagina } = await ctx.request.body().value;
-
-    const trazabilidad = await trazabilidadCollection.findOne({ id_registro });
-    if (trazabilidad) {
-      const newText = `${trazabilidad.text}, ${pagina}`;
-      await trazabilidadCollection.updateOne(
-        { id_registro },
-        { $set: { text: newText } }
-      );
-
-      ctx.response.status = 200;
-      ctx.response.body = { message: "Trazabilidad actualizada" };
+    if (result.rows.length > 0) {
+      ctx.response.body = { success: true, data: result.rows[0] };
     } else {
       ctx.response.status = 404;
-      ctx.response.body = { message: "Registro de trazabilidad no encontrado" };
+      ctx.response.body = { success: false, message: "Usuario no encontrado" };
     }
   } catch (error) {
-    console.error("Error en updateTrazabilidad:", error);
+    console.error("Error al recuperar el usuario:", error);
     ctx.response.status = 500;
-    ctx.response.body = { message: "Error interno del servidor" };
+    ctx.response.body = { success: false, message: "Error al recuperar el usuario" };
+  } finally {
+    db.release();
+  }
+};
+
+export const updateUser = async (ctx: Context) => {
+  const db = await connectToPostgres();
+  const userId = ctx.params.id; // Obtener el ID del usuario a actualizar
+  const { value } = await ctx.request.body();
+  const userData = await value;
+
+  try {
+    const query = `
+      UPDATE usuarios SET
+        nombre = $1,
+        email = $2,
+        cedula = $3,
+        telefono = $4,
+        id_dependencia = $5,
+        role = $6
+      WHERE id_usuario = $7
+      RETURNING *
+    `;
+    const result = await db.queryObject<Usuarios>(query, [
+      userData.nombre,
+      userData.email,
+      userData.cedula,
+      userData.telefono,
+      userData.id_dependencia,
+      userData.role,
+      userId
+    ]);
+
+    if (result.rows.length > 0) {
+      ctx.response.body = { success: true, data: result.rows[0] };
+    } else {
+      ctx.response.status = 404;
+      ctx.response.body = { 
+        success: false, 
+        message: 'Usuario no encontrado' };
+    }
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+    ctx.response.status = 500;
+    ctx.response.body = { success: false, message: 'Error al actualizar usuario' };
+  } finally {
+    db.release();
   }
 };

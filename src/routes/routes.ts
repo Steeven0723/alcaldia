@@ -1,13 +1,42 @@
 // routes/routes.ts
-import { Router } from "../../deps.ts";
-import userRouter from "./userRoutes.ts"; // Importa las rutas de usuario
-import pqrRoutes from "./pqrRoutes.ts";
+import { Router, Context  } from "../../deps.ts";
+// import userRouter from "./userRoutes.ts"; // Importa las rutas de usuario
+import authRoutes from "./authRoutes.ts"; 
+import { listUsers, registerUser, updateUser} from "../controllers/userController.ts";
+import dashboardRouter from "./dashboardRoutes.ts";
+import dependenceRoutes from "./dependenceRoutes.ts";
+import UserRoutes from "./userRoutes.ts";
+import { getDependencias, listDependence, updateDependence } from "../controllers/dependenceController.ts";
 
 const router = new Router();
 
-router.use(userRouter.routes());
-router.use(userRouter.allowedMethods());
-router.use(pqrRoutes.routes());
+// router.use(userRouter.routes());
+// router.use(userRouter.allowedMethods());
+router.use(authRoutes.routes());
+router.use(authRoutes.allowedMethods());
+
+
+
+// Rutas
+router.post("/registerUser", registerUser);;
+router.get("/listUsers", listUsers); // Endpoint para listar usuarios
+router.put('/updateUser/:id', updateUser);
+router.get("/dependencias", getDependencias);
+router.get("/listDependence", listDependence);
+router.put("/updateDependence/:id", updateDependence);
+
+
+
+
+// Rutas del dashboard
+router.use(dashboardRouter.routes());
+router.use(dashboardRouter.allowedMethods());
+
+router.use(dependenceRoutes.routes())
+router.use(dependenceRoutes.allowedMethods());
+
+router.use(UserRoutes.routes())
+router.use(UserRoutes.allowedMethods());
 
 
 
@@ -16,7 +45,7 @@ router.get("/", async (ctx) => {
   try {
     await ctx.send({
       root: `${Deno.cwd()}/public`,
-      index: "index.html",
+      index: "auth/login.html",
     });
   } catch (error) {
     console.error("Error al enviar el archivo:", error);
@@ -24,21 +53,6 @@ router.get("/", async (ctx) => {
     ctx.response.body = { message: "Archivo no encontrado" };
   }
 });
-
-
-// // Ruta para el registro (register.html)
-// router.get("/auth/register.html", async (ctx) => {
-//   try {
-//     await ctx.send({
-//       root: `${Deno.cwd()}/public`,
-//       index: "register.html",
-//     });
-//   } catch (error) {
-//     console.error("Error al enviar el archivo:", error);
-//     ctx.response.status = 404;
-//     ctx.response.body = { message: "Archivo no encontrado" };
-//   }
-// });
 
 // Ruta para el registro del administrador
 router.get("/auth/register.html", async (ctx) => {
@@ -66,65 +80,29 @@ router.get("/auth/register.html", async (ctx) => {
   }
 });
 
+// Rutas para CSS, JS e IMG
+const allowedExtensions = ["css", "js", "img"];
 
+router.get("/:extension/:file", async (ctx) => {
+  const { extension, file } = ctx.params;
 
-// Ruta para el login (login.html)
-router.get("/auth/login.html", async (ctx) => {
-  try {
-    await ctx.send({
-      root: `${Deno.cwd()}/public`,
-      index: "login.html",
-    });
-  } catch (error) {
-    console.error("Error al enviar el archivo:", error);
+  if (!allowedExtensions.includes(extension)) {
     ctx.response.status = 404;
-    ctx.response.body = { message: "Archivo no encontrado" };
+    ctx.response.body = { message: `Extensión no permitida: ${extension}` };
+    return; 
   }
-});
 
-// Rutas para CSS y JS
-router.get("/css/:file", async (ctx) => {
-  const file = ctx.params.file;
   try {
     await ctx.send({
       root: `${Deno.cwd()}/public/`,
       index: file,
     });
   } catch (error) {
-    console.error("Error al enviar el archivo CSS:", error);
+    console.error(`Error al enviar el archivo ${extension.toUpperCase()}:`, error);
     ctx.response.status = 404;
-    ctx.response.body = { message: "Archivo CSS no encontrado" };
+    ctx.response.body = { message: `Archivo ${extension.toUpperCase()} no encontrado` };
   }
 });
-
-router.get("/js/:file", async (ctx) => {
-  const file = ctx.params.file;
-  try {
-    await ctx.send({
-      root: `${Deno.cwd()}/public/`,
-      index: file,
-    });
-  } catch (error) {
-    console.error("Error al enviar el archivo JS:", error);
-    ctx.response.status = 404;
-    ctx.response.body = { message: "Archivo JS no encontrado" };
-  }
-});
-
-router.get("/img/:file", async (ctx) => {
-  const file = ctx.params.file;
-  try {
-    await ctx.send({
-      root: `${Deno.cwd()}/public/`,
-      index: file,
-    });
-  } catch (error) {
-    console.error("Error al enviar el archivo IMG:", error);
-    ctx.response.status = 404;
-    ctx.response.body = { message: "Archivo IMG no encontrado" };
-  }
-});
-
 
 // Puedes agregar más rutas aquí
 

@@ -1,13 +1,256 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usuarios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        secondary: "#10b981",
+                        accent: "#8b5cf6",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        .group:hover .group-hover\:block {
+            display: block;
+        }
+    </style>
+
 </head>
-<body>
-    <h1>Hola</h1>
+
+<body class="bg-gray-100 font-sans">
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="bg-gray-800 text-white w-full lg:w-64 lg:min-h-screen transition-all duration-300 ease-in-out relative">
+            <div class="p-4">
+                <h1 class="text-2xl font-bold">AdminPro</h1>
+            </div>
+            <nav class="mt-6">
+                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+                    href="/admin/dashboard.html">
+                    <i class="fas fa-home mr-2"></i><span>Dashboard</span>
+                </a>
+                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+                    href="/admin/user/index.html">
+                    <i class="fas fa-users mr-2"></i><span>Usuarios</span>
+                </a>
+                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+                    href="/admin/dependence/index.html">
+                    <i class="fas fa-project-diagram mr-2"></i><span>Dependencias</span>
+                </a>
+                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+                    href="#">
+                    <i class="fas fa-tasks mr-2"></i><span>Proyectos</span>
+                </a>
+                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+                    href="#">
+                    <i class="fas fa-cog mr-2"></i><span>Configuración</span>
+                </a>
+            </nav>
+            <button id="toggleSidebar"
+                class="hidden lg:block absolute bottom-4 right-4 bg-gray-700 text-white p-2 rounded-full focus:outline-none">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-md">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center py-4">
+                        <div class="flex items-center">
+                                <button
+                                    class="lg:hidden bottom-4 right-4 bg-gray-700 text-white p-2 rounded-full focus:outline-none"
+                                    id="sidebarToggle">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                            <h2 class="ml-2 text-xl font-semibold text-gray-800">
+                                Dependencias
+                            </h2>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <button id="userMenuButton"
+                                    class="flex items-center text-gray-500 hover:text-gray-600 focus:outline-none">
+                                    <img class="h-8 w-8 rounded-full object-cover"
+                                        src="https://randomuser.me/api/portraits/men/1.jpg" alt="User avatar" />
+                                        <span id="nombre" class="ml-2 text-sm font-medium">Nombre del usuario</span>
+                                    <i class="fas fa-chevron-down ml-2"></i>
+                                </button>
+                                <div id="userMenuDropdown"
+                                    class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10 hidden">
+                                    <a href="/" id="logout"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
+                                    <a href="/" id="logout"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Configuración</a>
+                                    <a href="/" id="logout"
+                                        class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Cerrar sesión</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="container mx-auto px-6 py-8">
+                    <h3 class="text-gray-700 text-3xl font-medium">Dashboard</h3>
+
+                    <div class="mt-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-white shadow-lg rounded-lg p-4">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-primary rounded-full p-3">
+                                        <i class="fas fa-users fa-2x text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="text-lg font-semibold">Total Usuarios</h4>
+                                        <p class="text-gray-600">1,234</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-lg rounded-lg p-4">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-secondary rounded-full p-3">
+                                        <i class="fas fa-project-diagram fa-2x text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="text-lg font-semibold">Dependencias</h4>
+                                        <p class="text-gray-600">56</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-lg rounded-lg p-4">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-accent rounded-full p-3">
+                                        <i class="fas fa-tasks fa-2x text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="text-lg font-semibold">Proyectos Activos</h4>
+                                        <p class="text-gray-600">23</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white shadow-lg rounded-lg p-4">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 bg-yellow-500 rounded-full p-3">
+                                        <i class="fas fa-clock fa-2x text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        <h4 class="text-lg font-semibold">Tareas Pendientes</h4>
+                                        <p class="text-gray-600">89</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white shadow-lg rounded-lg p-4">
+                            <h4 class="text-lg font-semibold mb-4">Actividad Reciente</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <img class="h-10 w-10 rounded-full"
+                                            src="https://randomuser.me/api/portraits/women/2.jpg" alt="User avatar" />
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium text-gray-900">
+                                            María González
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            Completó el proyecto "Rediseño de la página de inicio"
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <img class="h-10 w-10 rounded-full"
+                                            src="https://randomuser.me/api/portraits/men/3.jpg" alt="User avatar" />
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium text-gray-900">
+                                            Carlos Rodríguez
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            Actualizó la dependencia "Sistema de Pagos"
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <img class="h-10 w-10 rounded-full"
+                                            src="https://randomuser.me/api/portraits/women/4.jpg" alt="User avatar" />
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium text-gray-900">
+                                            Ana Martínez
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            Creó un nuevo proyecto "Campaña de Marketing Q2"
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white shadow-lg rounded-lg p-4">
+                            <h4 class="text-lg font-semibold mb-4">Proyectos en Curso</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Rediseño del Portal</span>
+                                        <span class="text-sm font-medium text-gray-700">70%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-primary h-2.5 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Implementación de API</span>
+                                        <span class="text-sm font-medium text-gray-700">45%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-secondary h-2.5 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-gray-700">Migración de Base de
+                                            Datos</span>
+                                        <span class="text-sm font-medium text-gray-700">90%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-accent h-2.5 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../js/navbar-toggle.js"></script>
+
+    
 
     <script src="../../js/dashboard.js"></script>
+
 </body>
+
 </html>

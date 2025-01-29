@@ -1,7 +1,7 @@
 // models/registroLoginModel.ts
 export interface RegistroLogin {
-    _id?: { $oid: string };
-    id_user: string;
+    id_registro: number;
+    id_usuario: string;
     fecha: string;
     hora: string;
     text_trazabilidad?: string; // Inicialmente NULL

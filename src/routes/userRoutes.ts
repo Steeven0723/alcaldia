@@ -1,21 +1,35 @@
-// routes/userRoutes.ts
+// // routes/userRoutes.ts
 import { Router } from "../../deps.ts";
-import { registerUser, loginUser, logoutUser  } from "../controllers/userController.ts";
-import dashboardRoutes from "./dashboardRoutes.ts";
-import dependenceRoutes from "./dependenceRoutes.ts";
+import { authMiddleware } from "../middlewares/authMiddleware.ts";
 
-const router = new Router();
+const userRoutes = new Router();
 
-// Rutas de autenticación de usuario
-router.post("/register", registerUser);
-router.post("/login", loginUser);
-router.post("/logout", logoutUser);
+  // Ruta para servir el archivo HTML del user
 
-// Rutas del dashboard
-router.use(dashboardRoutes.routes());
-router.use(dashboardRoutes.allowedMethods());
+const htmlRoutes = [
+  { path: "/admin/user/index.html", filePath: "/admin/user/index.html" },
+  { path: "/admin/user/create.html", filePath: "/admin/user/create.html" },
+  { path: "/admin/user/listUsers.html", filePath: "/admin/user/listUsers.html" },
+  { path: "/admin/user/edit.html", filePath: "/admin/user/edit.html" },
 
-router.use(dependenceRoutes.routes())
-router.use(dependenceRoutes.allowedMethods());
+];
 
-export default router;
+htmlRoutes.forEach(({ path, filePath }) => {
+  userRoutes.get(path, async (ctx) => {
+    try {
+      await ctx.send({
+        root: `${Deno.cwd()}/public`,
+        index: filePath,
+      });
+    } catch (error) {
+      console.error(`Error al enviar el archivo ${filePath}:`, error);
+      ctx.response.status = 404;
+      ctx.response.body = { message: "Archivo no encontrado" };
+    }
+  });
+});
+
+
+
+
+  export default userRoutes;

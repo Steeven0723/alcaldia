@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-window
 // public/js/login.js
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -14,13 +15,16 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
       },
     });
     const data = await response.json();
-    alert(data.message);
 
     if (response.ok) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', data.role);
-      localStorage.setItem("id_registro", data.id_registro); // Agregar este paso
+
       
+
+      sessionStorage.setItem('token', data.token);
+      sessionStorage.setItem('role', data.role);
+      sessionStorage.setItem("id_registro", data.id_registro); // Agregar este paso
+      sessionStorage.setItem("nombre", data.nombre);
+
       if (data.role === "1") {  // Administrador
         window.location.href = "/admin/dashboard.html";
       } else if (data.role === "2") {  // Funcionario
@@ -44,10 +48,32 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
       // alert(dashboardUrl)
       // window.location.href = dashboardUrl;
     } else {
-      alert(data.message);
+      // alert(data.message);
+      showAlert(data.message, 'error');
+
     }
   } catch (error) {
     console.error("Error:", error);
-    alert("Ocurrió un error durante el inicio de sesión");
+    showAlert("Ocurrió un error durante el inicio de sesión", 'error');
   }
+
+  
 });
+
+function showAlert(message, type) {
+  const alertContainer = document.getElementById('floating-alert-container');
+
+  // Crear el elemento de la alerta
+  const alert = document.createElement('div');
+  alert.classList.add('alert', type === 'error' ? 'error' : 'success');
+  alert.textContent = message;
+
+  // Agregar al contenedor
+  alertContainer.appendChild(alert);
+
+  // Remover la alerta después de la animación (4s)
+  setTimeout(() => {
+      alert.remove();
+  }, 4000); // Duración total de la animación + tiempo visible
+}
+
