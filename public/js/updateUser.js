@@ -1,5 +1,6 @@
 //  public/js/updateUser.js
 // deno-lint-ignore-file no-window
+
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     window.userId = urlParams.get('id'); // Guardar userId en una variable global
@@ -62,5 +63,4 @@ document.addEventListener('DOMContentLoaded', async () => {
       alert('Error al actualizar usuario: ' + error);
     }
   });
-
   

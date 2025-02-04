@@ -1,34 +1,18 @@
 // routes/routes.ts
 import { Router, Context  } from "../../deps.ts";
-// import userRouter from "./userRoutes.ts"; // Importa las rutas de usuario
 import authRoutes from "./authRoutes.ts"; 
-import { listUsers, registerUser, updateUser} from "../controllers/userController.ts";
 import dashboardRouter from "./dashboardRoutes.ts";
 import dependenceRoutes from "./dependenceRoutes.ts";
 import UserRoutes from "./userRoutes.ts";
-import { getDependencias, listDependence, updateDependence } from "../controllers/dependenceController.ts";
+import listRoutes from "./listRoutes.ts";
+
 
 const router = new Router();
 
-// router.use(userRouter.routes());
-// router.use(userRouter.allowedMethods());
+// Rutas
 router.use(authRoutes.routes());
 router.use(authRoutes.allowedMethods());
 
-
-
-// Rutas
-router.post("/registerUser", registerUser);;
-router.get("/listUsers", listUsers); // Endpoint para listar usuarios
-router.put('/updateUser/:id', updateUser);
-router.get("/dependencias", getDependencias);
-router.get("/listDependence", listDependence);
-router.put("/updateDependence/:id", updateDependence);
-
-
-
-
-// Rutas del dashboard
 router.use(dashboardRouter.routes());
 router.use(dashboardRouter.allowedMethods());
 
@@ -38,6 +22,8 @@ router.use(dependenceRoutes.allowedMethods());
 router.use(UserRoutes.routes())
 router.use(UserRoutes.allowedMethods());
 
+router.use(listRoutes.routes())
+router.use(listRoutes.allowedMethods());
 
 
 // Ruta para la página de inicio

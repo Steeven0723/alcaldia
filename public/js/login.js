@@ -1,5 +1,7 @@
 // deno-lint-ignore-file no-window
 // public/js/login.js
+import { showAlert } from './alert.js';
+
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -25,28 +27,13 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
       sessionStorage.setItem("id_registro", data.id_registro); // Agregar este paso
       sessionStorage.setItem("nombre", data.nombre);
 
-      if (data.role === "1") {  // Administrador
+      if (data.role === "Administrador") {  // Administrador
         window.location.href = "/admin/dashboard.html";
-      } else if (data.role === "2") {  // Funcionario
+      } else if (data.role === "Funcionario") {  // Funcionario
         window.location.href = "/official/dashboard.html";
-      }else if (data.role === "3") {  // Funcionario
+      }else if (data.role === "Recepcionista") {  // Funcionario
         window.location.href = "/reception/dashboard.html";
       }
-      
-      // let dashboardUrl;
-      // switch (role) {
-      //   case "1":
-      //     dashboardUrl = "/admin/dashboard.html";
-      //     break;
-      //   case "2":
-      //     dashboardUrl = "/official/dashboard.html";
-      //     break;
-      //   case "3":
-      //     dashboardUrl = "/reception/dashboard.html";
-      //     break;
-      // }
-      // alert(dashboardUrl)
-      // window.location.href = dashboardUrl;
     } else {
       // alert(data.message);
       showAlert(data.message, 'error');
@@ -59,21 +46,3 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
 
   
 });
-
-function showAlert(message, type) {
-  const alertContainer = document.getElementById('floating-alert-container');
-
-  // Crear el elemento de la alerta
-  const alert = document.createElement('div');
-  alert.classList.add('alert', type === 'error' ? 'error' : 'success');
-  alert.textContent = message;
-
-  // Agregar al contenedor
-  alertContainer.appendChild(alert);
-
-  // Remover la alerta después de la animación (4s)
-  setTimeout(() => {
-      alert.remove();
-  }, 4000); // Duración total de la animación + tiempo visible
-}
-

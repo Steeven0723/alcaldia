@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editar Usuario</title>
+    <link rel="icon" href="../../img/favicon_16.png" type="image/png" />
+    <title>Cambiar Contraseña</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         .group:hover .group-hover\:block {
@@ -14,44 +16,20 @@
         }
     </style>
 
+    <link rel="stylesheet" href="../../css/bg.css" />
+
+
 </head>
 
 <body class="bg-gray-100 font-sans">
     <div class="min-h-screen flex flex-col lg:flex-row">
         <!-- Sidebar -->
-        <aside id="sidebar"
-            class="bg-gray-800 text-white w-full lg:w-64 lg:min-h-screen transition-all duration-300 ease-in-out relative">
-            <div class="p-4">
-                <h1 class="text-2xl font-bold">AdminPro</h1>
-            </div>
-            <nav class="mt-6">
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="/admin/dashboard.html">
-                    <i class="fas fa-home mr-2"></i><span>Dashboard</span>
-                </a>
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="/admin/user/index.html">
-                    <i class="fas fa-users mr-2"></i><span>Usuarios</span>
-                </a>
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="/admin/dependence/index.html">
-                    <i class="fas fa-project-diagram mr-2"></i><span>Dependencias</span>
-                </a>
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="#">
-                    <i class="fas fa-tasks mr-2"></i><span>Proyectos</span>
-                </a>
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="#">
-                    <i class="fas fa-cog mr-2"></i><span>Configuración</span>
-                </a>
-            </nav>
-            <button id="toggleSidebar"
-                class="hidden lg:block absolute bottom-4 right-4 bg-gray-700 text-white p-2 rounded-full focus:outline-none">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </aside>
-
+        <aside
+        id="sidebar"
+        class="bg-gray-800 text-white w-full lg:w-64 lg:min-h-screen transition-all duration-300 ease-in-out relative"
+      >
+        <div id="sidebar-container"></div>
+      </aside>
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Top Navigation -->
@@ -60,13 +38,10 @@
                     <div class="flex justify-between items-center py-4">
                         <div class="flex items-center">
                             <button
-                                class="lg:hidden bottom-4 right-4 bg-gray-700 text-white p-2 rounded-full focus:outline-none"
+                                class="bottom-4 right-4 text-white p-2 rounded-full focus:outline-none"
                                 id="sidebarToggle">
-                                <i class="fas fa-bars"></i>
+                                <i class="fas fa-bars text-gray-800"></i>
                             </button>
-                            <h2 class="ml-2 text-xl font-semibold text-gray-800">
-                                ALCALDIA PAILITAS
-                            </h2>
                         </div>
                         <div class="flex items-center">
                             <div class="relative">
@@ -79,10 +54,6 @@
                                 </button>
                                 <div id="userMenuDropdown"
                                     class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10 hidden">
-                                    <a href="#" id="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
-                                    <a href="#" id="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Configuración</a>
                                     <a href="/" id="logout"
                                         class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Cerrar sesión</a>
                                 </div>
@@ -98,19 +69,9 @@
                 class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 flex justify-center items-center relative h-screen">
                 <div class="container mx-auto flex justify-center px-4">
                     <div class="bg-white bg-opacity-100 shadow-lg rounded-lg p-8 w-full max-w-md">
-                        
-                        <h2 class="text-2xl font-bold text-center mb-6">Editar Usuario</h2>
+                        <h2 class="text-2xl font-bold text-center mb-6">Cambiar Contraseña</h2>
 
-                        <form id="edit-user-form">
-                            <input type="hidden" id="user-id" name="user_id">
-                            <!-- Campo Nombre -->
-                            <div class="mb-1">
-                                <label for="name" class="block text-sm font-medium mb-1">Nombre:</label>
-                                <input type="text" id="name"
-                                    class="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-[#D91424]"
-                                    name="name" required minlength="2" />
-                            </div>
-
+                        <form id="updatepass-form">
                             <!-- Campo Correo Electrónico -->
                             <div class="mb-1">
                                 <label for="email" class="block text-sm font-medium mb-1">Correo electrónico:</label>
@@ -119,66 +80,27 @@
                                     name="email" required />
                             </div>
 
-                            <!-- Campo Cédula -->
-                            <div class="mb-1">
-                                <label for="cedula" class="block text-sm font-medium mb-1">Cédula:</label>
-                                <input type="text" id="cedula"
-                                    class="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-[#D91424]"
-                                    name="cedula" required minlength="10" />
-                            </div>
-
-                            <!-- Campo Teléfono -->
-                            <div class="mb-1">
-                                <label for="telefono" class="block text-sm font-medium mb-1">Teléfono:</label>
-                                <input type="text" id="telefono"
-                                    class="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-[#D91424]"
-                                    name="telefono" required />
-                            </div>
-
                             <!-- Campo Contraseña -->
-                            <div class="mb-1 relative">  <label for="password" class="block text-sm font-medium mb-1">Contraseña:</label>
-                                <input type="password" id="password"
-                                       class="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-[#D91424]"
-                                       name="password" required minlength="8">
-                                <span class="absolute inset-y-0 right-0 flex items-center pr-3 top-5 cursor-pointer" id="togglePassword">
-                                  <i class="fas fa-eye" id="eyeIcon"></i>  </span>
-                              </div>
-
-                            <div class="flex space-x-4 items-center">
-
-                                <!-- Campo Dependencias -->
-                                <div class="mb-1 w-1/2">
-                                    <label for="id_dependencia"
-                                        class="block text-sm font-medium mb-1">Dependencia:</label>
-                                    <select id="id_dependencia" name="id_dependencia" required>
-                                        <!-- Las dependencias se cargarán aquí -->
-                                    </select>
-                                </div>
-
-                                <!-- Campo Rol -->
-                                <div class="mb-1 w-1/2">
-                                    <label for="role" class="block text-sm font-medium mb-1">Rol:</label>
-                                    <select id="role" name="role" required>
-                                        <option value="1">Administrador</option>
-                                        <option value="2">Funcionario</option>
-                                        <option value="3">Recepción</option>
-                                    </select>
-                                </div>
-
+                            <div class="mb-1 relative">
+                                <label for="newPassword" class="block text-sm font-medium mb-1">Nueva contraseña:</label>
+                                <input type="password" id="newPassword"
+                                    class="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-[#D91424]"
+                                    name="newPassword" required minlength="8" />
+                                
+                                <!-- Ojo para mostrar/ocultar contraseña -->
+                                <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 top-6" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
 
                             <div class="flex justify-center">
                                 <button type="submit"
                                     class="bg-[#D91424] text-white rounded-lg p-2 w-full hover:bg-[#c4131d] transition duration-200">
-                                    Actualizar
+                                    Cambiar
                                 </button>
                             </div>
+                            <div id="floating-alert-container" class="fixed bottom-4 right-4 space-y-4 z-50"></span></div>
                         </form>
-
-                        <div id="totp-secret" style="display: none">
-                            <h1>Actualizado con Exito</h1>
-                        </div>
-                    </div>
                 </div>
             </main>
 
@@ -191,64 +113,13 @@
     <!-- Propio JavaScript -->
     <script src="../../js/dashboardAdmin.js"></script>
 
-    <script src="../../js/dependencias.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-          const urlParams = new URLSearchParams(window.location.search);
-          const userId = urlParams.get('id');
-    
-          if (userId) {
-            // Fetch user data based on userId
-            try {
-              const response = await fetch(`/getUser/${userId}`); // New route to get user by ID
-              const user = await response.json();
-    
-              if (user.success) {
-                // Populate the form with user data
-                document.getElementById('user-id').value = userId;
-                document.getElementById('name').value = user.data.nombre;
-                document.getElementById('email').value = user.data.email;
-                document.getElementById('cedula').value = user.data.cedula;
-                document.getElementById('telefono').value = user.data.telefono;
-                document.getElementById('id_dependencia').value = user.data.id_dependencia;
-                document.getElementById('role').value = user.data.role;
+    <script type="module" src="../../js/updatepass.js"></script>
+    <script src="../../js/toggleAccordion.js"></script>
+    <script src="../../js/sadebar.js"></script>
 
 
 
 
-                // ... set other form fields ...
-              } else {
-                console.error("Error fetching user data:", user.message);
-                // Handle error, e.g., display an error message
-              }
-            } catch (error) {
-              console.error("Error fetching user data:", error);
-            }
-          } else {
-            console.error("User ID not provided.");
-          }
-        });
-      </script>
-      <script>
-        const passwordInput = document.getElementById('password');
-        const togglePassword = document.getElementById('togglePassword');
-        const eyeIcon = document.getElementById('eyeIcon');
-      
-        togglePassword.addEventListener('click', () => {
-          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-          passwordInput.setAttribute('type', type);
-      
-          // Toggle the eye icon
-          if (type === 'password') {
-            eyeIcon.classList.remove('fa-eye-slash'); // Hide
-            eyeIcon.classList.add('fa-eye');         // Show
-          } else {
-            eyeIcon.classList.remove('fa-eye');         // Show
-            eyeIcon.classList.add('fa-eye-slash');     // Hide
-          }
-        });
-      </script>
 </body>
 
 </html>

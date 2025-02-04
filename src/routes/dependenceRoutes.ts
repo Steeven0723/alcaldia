@@ -1,10 +1,15 @@
 // src/routes/dependenceRoutes.ts
 import { Router } from "../../deps.ts";
+import { getDependence, listDependence, updateDependence } from "../controllers/dependenceController.ts";
 import { authMiddleware } from "../middlewares/authMiddleware.ts";
 
 
 
 const dependenceRoutes = new Router();
+
+dependenceRoutes.get("/dependencias", getDependence);
+dependenceRoutes.get("/listDependence", listDependence);
+dependenceRoutes.put("/updateDependence/:id", updateDependence);
 
   // Ruta específica para administradores
   // dependenceRoutes.get("/admin/dependence/index", authMiddleware(["1"]), (ctx) => {
@@ -21,8 +26,6 @@ const dependenceRoutes = new Router();
     // Ruta para servir el archivo HTML del dependence
   const htmlRoutes = [
     { path: "/admin/dependence/index.html", filePath: "/admin/dependence/index.html" },
-    { path: "/admin/dependence/create.html", filePath: "/admin/dependence/create.html" },
-    { path: "/admin/dependence/list.html", filePath: "/admin/dependence/edit.html" },
   ];
   
   htmlRoutes.forEach(({ path, filePath }) => {

@@ -8,6 +8,7 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Propio CSS -->
   <!-- <link rel="stylesheet" href="../css/styles.css"> -->
@@ -21,13 +22,7 @@
       <div class="container mx-auto px-4 py-2 flex justify-between items-center">
         <a class="text-xl font-bold text-green-700" href="/">Alcaldía Pailitas</a>
 
-
-        <button id="navbar-toggle" class="lg:hidden text-gray-600 focus:outline-none">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-          </svg>
-        </button>
-        <div id="navbar" class="hidden md:flex space-x-4">
+        <div id="navbar" class=" md:flex space-x-4">
           <a class="hover:text-red-600 hover:underline" href="/">Iniciar Sesión</a>
         </div>
       </div>
@@ -80,6 +75,7 @@
                 Registrarse
               </button>
             </div>
+            <div id="floating-alert-container" class="fixed bottom-4 right-4 space-y-4 z-50"></span></div>
           </form>
 
           <div id="totp-secret" style="display: none">
@@ -91,18 +87,8 @@
     </main>
   </div>
 
-  <script>
-    // JavaScript para el toggle del menú de navegación
-    document
-      .getElementById("navbar-toggle")
-      .addEventListener("click", function () {
-        const navbar = document.getElementById("navbar");
-        navbar.classList.toggle("hidden");
-      });
-  </script>
-
   <!-- Propio JavaScript -->
-  <script src="../js/register.js"></script>
+  <script type="module" src="../js/register.js"></script>
 </body>
 
 </html>

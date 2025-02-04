@@ -4,7 +4,7 @@ import { connectToPostgres } from "../config/db.ts";
 import { Dependencias } from "../models/dependenceModel.ts";
 
 
-export const getDependencias = async (ctx: Context) => {
+export const getDependence = async (ctx: Context) => {
   try {
     const db = await connectToPostgres();
     const result = await db.queryObject<Dependencias>("SELECT id_dependencia, nombre_dependencia FROM dependencias;");

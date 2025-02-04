@@ -1,4 +1,6 @@
 //  public/js/register.js
+import { showAlert } from './alert.js';
+
 document
   .getElementById("register-form")
   .addEventListener("submit", async (event) => {
@@ -29,10 +31,14 @@ document
         `;
       } else {
         console.error("Mensaje:", result.message);
-        alert("Mensaje: " + result.message);
+        showAlert('Mensaje: ' + result.message, 'error');
+
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Ocurrió un error durante el registro");
+      showAlert("Ocurrió un error durante el registro", 'error');
     }
   });
+
+  
+  

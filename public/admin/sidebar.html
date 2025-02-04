@@ -1,0 +1,134 @@
+<!-- Sidebar -->
+
+  <div class="p-4">
+    <h1 class="text-2xl font-bold">Alcaldia Pailitas</h1>
+  </div>
+  <nav class="mt-6">
+    <a
+      class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+      href="/admin/dashboard.html"
+    >
+      <i class="fas fa-home mr-2"></i><span>Inicio</span>
+    </a>
+    <!-- Acordeón de "Usuarios" -->
+    <div class="w-full mb-1">
+      <button
+        class="block w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white flex items-center"
+        onclick="toggleAccordion(this, 'submenu-usuarios')"
+      >
+        <i class="fas fa-users mr-2"></i><span>Usuarios</span>
+        <svg
+          class="ml-auto transform transition-transform duration-200"
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-chevron-down"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M4.293 5.293a1 1 0 0 1 1.414 0L8 7.586l2.293-2.293a1 1 0 0 1 1.414 1.414l-3 3a1 1 0 0 1-1.414 0l-3-3a1 1 0 0 1 0-1.414z"
+          />
+        </svg>
+      </button>
+      <div id="submenu-usuarios" class="hidden pl-6">
+        <a
+          href="/admin/user/create.html"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Registrar</a
+        >
+        <a
+          href="/admin/user/editUsers.html"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Editar</a
+        >
+        <a
+          href="/admin/user/updatepass.html"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Cambiar Contraseña</a
+        >
+      </div>
+    </div>
+
+    <!-- Acordeón de "Resportes" -->
+    <div class="w-full mb-1">
+      <button
+        class="block w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white flex items-center"
+        onclick="toggleAccordion(this, 'submenu-Reportes')"
+      >
+        <i class="fas fa-project-diagram mr-2"></i><span>Reportes</span>
+        <svg
+          class="ml-auto transform transition-transform duration-200"
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-chevron-down"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M4.293 5.293a1 1 0 0 1 1.414 0L8 7.586l2.293-2.293a1 1 0 0 1 1.414 1.414l-3 3a1 1 0 0 1-1.414 0l-3-3a1 1 0 0 1 0-1.414z"
+          />
+        </svg>
+      </button>
+      <div id="submenu-Repostes" class="hidden pl-6">
+        <a
+          href="#"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Tipo de reporte
+        </a>
+        <a
+          href="#"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Tipo de reporte</a
+        >
+      </div>
+    </div>
+
+    <!-- Acordeón de "Resportes" -->
+    <div class="w-full mb-1">
+      <button
+        class="block w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white flex items-center"
+        onclick="toggleAccordion(this, 'submenu-Listados')"
+      >
+        <i class="fas fa-list mr-2"></i><span>Listados</span>
+        <svg
+          class="ml-auto transform transition-transform duration-200"
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-chevron-down"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M4.293 5.293a1 1 0 0 1 1.414 0L8 7.586l2.293-2.293a1 1 0 0 1 1.414 1.414l-3 3a1 1 0 0 1-1.414 0l-3-3a1 1 0 0 1 0-1.414z"
+          />
+        </svg>
+      </button>
+      <div id="submenu-Listados" class="hidden pl-6">
+        <a
+          href="/admin/listed/listUsers.html"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Usuarios
+        </a>
+        <a
+          href="/admin/listed/listOfficialsActive.html"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Funcionarios activos
+        </a>
+        <a
+          href="/admin/listed/listUsersDependence.html"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Usuarios por dependencia
+        </a>
+        <a
+          href="/admin/listed/listUsersInactive.html"
+          class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
+          >Usuarios Inactivos
+        </a>
+      </div>
+    </div>
+  </nav>
+
+

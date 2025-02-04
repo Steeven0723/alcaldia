@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../../img/favicon_16.png" type="image/png" />
     <title>Redistrar usuario</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="../../css/bg.css" />
 
     <style>
         .group:hover .group-hover\:block {
@@ -19,51 +23,12 @@
 <body class="bg-gray-100 font-sans">
     <div class="min-h-screen flex flex-col lg:flex-row">
         <!-- Sidebar -->
-        <aside id="sidebar"
-            class="bg-gray-800 text-white w-full lg:w-64 lg:min-h-screen transition-all duration-300 ease-in-out relative">
-            <div class="p-4">
-                <h1 class="text-2xl font-bold">AdminPro</h1>
-            </div>
-            <nav class="mt-6">
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="/admin/dashboard.html">
-                    <i class="fas fa-home mr-2"></i><span>Inicio</span>
-                </a>
-                <div class="w-full">
-                    <div class="mb-1">
-                      <button
-                        class="block w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white flex items-center"
-                        onclick="toggleMenu()">
-                        <i class="fas fa-users mr-2"></i><span>Usuarios</span>
-                        <svg id="accordion-icon" class="ml-auto transform transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                          <path d="M4.293 5.293a1 1 0 0 1 1.414 0L8 7.586l2.293-2.293a1 1 0 0 1 1.414 1.414l-3 3a1 1 0 0 1-1.414 0l-3-3a1 1 0 0 1 0-1.414z"/>
-                        </svg>
-                      </button>
-                      <div id="submenu" class="hidden pl-6">
-                        <a href="/admin/user/create.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">Registrar</a>
-                        <a href="/admin/user/edit.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">Editar</a>
-                        <a href="/admin/user/uptatepass.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white">Cambiar Contraseña</a>
-                      </div>
-                    </div>
-                  </div>
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="/admin/dependence/index.html">
-                    <i class="fas fa-project-diagram mr-2"></i><span>Dependencias</span>
-                </a>
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="#">
-                    <i class="fas fa-tasks mr-2"></i><span>Proyectos</span>
-                </a>
-                <a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 hover:text-white"
-                    href="#">
-                    <i class="fas fa-cog mr-2"></i><span>Configuración</span>
-                </a>
-            </nav>
-            <button id="toggleSidebar"
-                class="hidden lg:block absolute bottom-4 right-4 bg-gray-700 text-white p-2 rounded-full focus:outline-none">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </aside>
+        <aside
+        id="sidebar"
+        class="bg-gray-800 text-white w-full lg:w-64 lg:min-h-screen transition-all duration-300 ease-in-out relative"
+      >
+        <div id="sidebar-container"></div>
+      </aside>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
@@ -73,13 +38,10 @@
                     <div class="flex justify-between items-center py-4">
                         <div class="flex items-center">
                             <button
-                                class="lg:hidden bottom-4 right-4 bg-gray-700 text-white p-2 rounded-full focus:outline-none"
+                                class="bottom-4 right-4 text-white p-2 rounded-full focus:outline-none"
                                 id="sidebarToggle">
-                                <i class="fas fa-bars"></i>
+                                <i class="fas fa-bars text-gray-800"></i>
                             </button>
-                            <h2 class="ml-2 text-xl font-semibold text-gray-800">
-                                ALCALDIA PAILITAS
-                            </h2>
                         </div>
                         <div class="flex items-center">
                             <div class="relative">
@@ -92,10 +54,6 @@
                                 </button>
                                 <div id="userMenuDropdown"
                                     class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10 hidden">
-                                    <a href="#" id="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Perfil</a>
-                                    <a href="#" id="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Configuración</a>
                                     <a href="/" id="logout"
                                         class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Cerrar sesión</a>
                                 </div>
@@ -192,6 +150,8 @@
                                     Registrarse
                                 </button>
                             </div>
+                            <div id="floating-alert-container" class="fixed bottom-4 right-4 space-y-4 z-50"></span></div>
+
                         </form>
 
                         <div id="totp-secret" style="display: none">
@@ -211,9 +171,12 @@
     <!-- Propio JavaScript -->
     <script src="../../js/dashboardAdmin.js"></script>
 
-    <script src="../../js/register.js"></script>
+    <script type="module" src="../../js/register.js"></script>
     <script src="../../js/dependencias.js"></script>
-    <script src="../../js/toggleMenu.js"></script>
+    <script src="../../js/toggleAccordion.js"></script>
+    <script src="../../js/sadebar.js"></script>
+
+
 
 
 </body>

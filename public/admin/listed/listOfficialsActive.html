@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../../img/favicon_16.png" type="image/png" />
+    <title>Listado de Funcionarios Activos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="../../css/bg.css" />
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="min-h-screen flex flex-col lg:flex-row">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="bg-gray-800 text-white w-full lg:w-64 lg:min-h-screen transition-all duration-300 ease-in-out relative">
+            <div id="sidebar-container"></div>
+        </aside>
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-md">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-center py-4">
+                        <div class="flex items-center">
+                            <button class="bottom-4 right-4 text-white p-2 rounded-full focus:outline-none" id="sidebarToggle">
+                                <i class="fas fa-bars text-gray-800"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="relative">
+                                <button id="userMenuButton" class="flex items-center text-gray-500 hover:text-gray-600 focus:outline-none">
+                                    <img class="h-8 w-8 rounded-full object-cover" src="https://randomuser.me/api/portraits/men/1.jpg" alt="User avatar" />
+                                    <span id="nombre" class="ml-2 text-sm font-medium">Nombre del usuario</span>
+                                    <i class="fas fa-chevron-down ml-2"></i>
+                                </button>
+                                <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-xl z-10 hidden">
+                                    <a href="/" id="logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Cerrar sesión</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h1 class="text-2xl font-bold text-gray-800">Lista de Funcionarios Activos</h1>
+                        <input type="text" id="searchCedula" placeholder="Buscar por Cédula" class="px-4 py-2 border rounded-md">
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">
+                            <thead class="bg-gray-100 border-b border-gray-200">
+                                <tr>
+                                    <th class="px-1 py-1 text-left text-sm font-medium text-gray-600 border-r border-gray-200">Cédula</th>
+                                    <th class="px-1 py-1 text-left text-sm font-medium text-gray-600 border-r border-gray-200">Nombre</th>
+                                    <th class="px-1 py-1 text-left text-sm font-medium text-gray-600 border-r border-gray-200">Email</th>
+                                    <th class="px-1 py-1 text-left text-sm font-medium text-gray-600 border-r border-gray-200">Teléfono</th>
+                                    <th class="px-1 py-1 text-left text-sm font-medium text-gray-600 border-r border-gray-200">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody" class="divide-y divide-gray-200">
+                                <!-- Las filas de usuarios se insertarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="pagination" class="my-4 text-center"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../../js/dashboardAdmin.js"></script>
+
+    <script src="../../js/navbar-toggle.js"></script>
+    <script src="../../js/toggleAccordion.js"></script>
+    <script type="module" src="../../js/listOfficialsActive.js"></script>
+    <script src="../../js/sadebar.js"></script>
+
+</body>
+</html>

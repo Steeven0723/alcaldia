@@ -36,24 +36,59 @@ if (!token) {
     });
 }
 
-document.getElementById("logout").addEventListener("click", function (event) {
+// Evento de cierre de sesión manual
+document.getElementById("logout").addEventListener("click", async (event) => {
   event.preventDefault();
-  // Eliminar todos los datos de sessionStorage
-  sessionStorage.clear();
-
-  // Redirigir al login
-  window.location.href = "/";
-
+  logout();
 });
 
+// Función para cerrar sesión
+async function logout() {
+  const idRegistro = sessionStorage.getItem("id_registro");
+  if (!idRegistro) {
+    console.error("No se encontró id_registro en sessionStorage");
+    return;
+  }
+
+  const token = sessionStorage.getItem("token");  // Eliminar token antes de hacer la petición
 
 
-// Actualizar trazabilidad para todos los enlaces
-// document.querySelectorAll("a").forEach((link) => {
-//   link.addEventListener("click", (e) => {
-//     const href = e.target.getAttribute("href");
-//     if (href && href !== "#") {
-//       updateTrazabilidad(href);
-//     }
-//   });
-// });
+  try {
+    const response = await fetch("/logout", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id_registro: idRegistro }),
+    });
+
+    if (response.ok) {
+      // Eliminar todos los datos de sessionStorage
+      sessionStorage.clear();
+
+      // Redirigir al login
+      window.location.href = "/";
+    } else {
+      const errorData = await response.json();
+      console.error("Error al cerrar sesión:", errorData);
+    }
+  } catch (error) {
+    console.error("Error de red:", error);
+  }
+}
+
+/* ========== CONTROL DE INACTIVIDAD ========== */
+let timeout;
+
+function resetTimer() {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    logout();
+  }, 60 * 60 * 1000); // 60 minutos
+}
+
+// Eventos para detectar actividad del usuario y reiniciar el temporizador
+document.addEventListener("mousemove", resetTimer);
+document.addEventListener("keydown", resetTimer);
+document.addEventListener("click", resetTimer);

@@ -1,11 +1,11 @@
-// deno-lint-ignore-file no-inner-declarations
+// deno-lint-ignore-file no-inner-declarations no-window
 // public/js/listUsers.js
 import { showAlert } from "./alert.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const tableBody = document.getElementById("userTableBody");
   const paginationContainer = document.getElementById("pagination");
-  const searchInput = document.getElementById("searchCedula"); // Campo de búsqueda
+  const searchInput = document.getElementById("id_dependencia"); // Campo de búsqueda
 
   let currentPage = 1;
   const usersPerPage = 10;
@@ -62,13 +62,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             </td>
             <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
                 <p class="text-gray-900 whitespace-no-wrap">${
-                  user.nombre_dependencia || "N/A"
+                  user.nombre_dependencia || "Sin Asignar"
                 }</p>
             </td>
             <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
-                <p class="text-gray-900 whitespace-no-wrap">${
-                  user.role || "N/A"
-                }</p>
+                <p class="text-gray-900 whitespace-no-wrap">${user.role}</p>
             </td>
             <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
               <span class="relative inline-block px-3 py-1 font-semibold leading-tight ${
@@ -83,15 +81,15 @@ document.addEventListener("DOMContentLoaded", async () => {
               </span>
             </td>
             <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
-                <p class="text-gray-900 whitespace-no-wrap">${
-                  user.totp_secret
-                }</p>
-              </td>
-              <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
-                <p class="text-gray-900 whitespace-no-wrap">${new Date(
-                  user.created_at
-                ).toLocaleString()}</p>
-              </td>
+              <p class="text-gray-900 whitespace-no-wrap">${
+                user.totp_secret
+              }</p>
+            </td>
+            <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
+              <p class="text-gray-900 whitespace-no-wrap">${new Date(
+                user.created_at
+              ).toLocaleString()}</p>
+            </td>
           `;
           tableBody.appendChild(row);
         });
@@ -105,7 +103,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       function filterUsers() {
         const searchTerm = searchInput.value.trim().toLowerCase();
         const filteredUsers = users.filter((user) => {
-          return user.cedula && user.cedula.toLowerCase().includes(searchTerm);
+          return user.nombre_dependencia && user.nombre_dependencia.toLowerCase().includes(searchTerm);
+        });
+
+        // **Ordenar antes de renderizar**
+        filteredUsers.sort((a, b) => {
+          const depA = a.nombre_dependencia ? a.nombre_dependencia.toLowerCase() : "";
+          const depB = b.nombre_dependencia ? b.nombre_dependencia.toLowerCase() : "";
+          return depA.localeCompare(depB);
         });
 
         currentPage = 1; // Reiniciar a la primera página
@@ -162,6 +167,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         </td>
       </tr>
     `;
+  }
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const dependenciaSelect = document.getElementById("id_dependencia");
+
+  try {
+    const response = await fetch("/dependencias");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const dependencias = await response.json();
+    if (!Array.isArray(dependencias)) {
+      throw new Error("Received data is not an array");
+    }
+
+    dependencias.forEach(dependencia => {
+      const option = document.createElement("option");
+      option.value = dependencia.nombre_dependencia;
+      option.textContent = dependencia.nombre_dependencia;
+      dependenciaSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error al cargar dependencias:", error);
+    const errorOption = document.createElement("option");
+    errorOption.textContent = "Error al cargar dependencias";
+    dependenciaSelect.appendChild(errorOption);
   }
 });
 

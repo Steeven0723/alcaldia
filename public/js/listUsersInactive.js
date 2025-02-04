@@ -1,4 +1,4 @@
-// deno-lint-ignore-file no-inner-declarations
+// deno-lint-ignore-file no-inner-declarations no-window
 // public/js/listUsers.js
 import { showAlert } from "./alert.js";
 
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let users = []; // Guardar todos los usuarios para realizar la búsqueda
 
   try {
-    const response = await fetch("/listUsers");
+    const response = await fetch("/listUsersInactive");
     const result = await response.json();
 
     if (result.success) {
@@ -61,37 +61,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }</p>
             </td>
             <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
-                <p class="text-gray-900 whitespace-no-wrap">${
-                  user.nombre_dependencia || "N/A"
-                }</p>
-            </td>
-            <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
-                <p class="text-gray-900 whitespace-no-wrap">${
-                  user.role || "N/A"
-                }</p>
-            </td>
-            <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
               <span class="relative inline-block px-3 py-1 font-semibold leading-tight ${
                 user.estado ? "text-green-900" : "text-red-900"
               }">
                 <span aria-hidden="true" class="absolute inset-0 ${
                   user.estado ? "bg-green-200" : "bg-red-200"
                 } rounded-full"></span>
-                <span class="relative">${
-                  user.estado ? "Activo" : "Inactivo"
-                }</span>
               </span>
             </td>
             <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
-                <p class="text-gray-900 whitespace-no-wrap">${
-                  user.totp_secret
-                }</p>
-              </td>
-              <td class="px-1 py-1 text-xs bg-white border-b border-gray-200 border-r border-gray-200">
-                <p class="text-gray-900 whitespace-no-wrap">${new Date(
-                  user.created_at
-                ).toLocaleString()}</p>
-              </td>
+              <p class="text-gray-900 whitespace-no-wrap">${new Date(
+                user.fecha
+              ).toLocaleString()}</p>
+            </td>
           `;
           tableBody.appendChild(row);
         });
